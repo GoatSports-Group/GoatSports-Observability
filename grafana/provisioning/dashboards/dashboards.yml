@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: GoatSports Services
+    orgId: 1
+    folder: GoatSports
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards

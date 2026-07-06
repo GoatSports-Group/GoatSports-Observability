@@ -1,0 +1,40 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: user-service
+    scheme: __USER_SCHEME__
+    metrics_path: __USER_PATH__
+    static_configs:
+      - targets:
+          - __USER_HOST__
+        labels:
+          service: user-service
+
+  - job_name: venue-service
+    scheme: __VENUE_SCHEME__
+    metrics_path: __VENUE_PATH__
+    static_configs:
+      - targets:
+          - __VENUE_HOST__
+        labels:
+          service: venue-service
+
+  - job_name: notification-service
+    scheme: __NOTIFICATION_SCHEME__
+    metrics_path: __NOTIFICATION_PATH__
+    static_configs:
+      - targets:
+          - __NOTIFICATION_HOST__
+        labels:
+          service: notification-service
+
+  - job_name: report-service
+    scheme: __REPORT_SCHEME__
+    metrics_path: __REPORT_PATH__
+    static_configs:
+      - targets:
+          - __REPORT_HOST__
+        labels:
+          service: report-service

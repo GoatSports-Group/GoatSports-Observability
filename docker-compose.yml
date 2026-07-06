@@ -1,0 +1,40 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    environment:
+      USER_METRICS_URL: ${USER_METRICS_URL}
+      VENUE_METRICS_URL: ${VENUE_METRICS_URL}
+      NOTIFICATION_METRICS_URL: ${NOTIFICATION_METRICS_URL}
+      REPORT_METRICS_URL: ${REPORT_METRICS_URL}
+      STORAGE_METRICS_URL: ${STORAGE_METRICS_URL}
+    volumes:
+      - ./prometheus/prometheus.yml.template:/etc/prometheus/prometheus.yml.template:ro
+      - ./prometheus/render-config.sh:/etc/prometheus/render-config.sh:ro
+      - prometheus-data:/prometheus
+    entrypoint:
+      - /bin/sh
+      - /etc/prometheus/render-config.sh
+
+  grafana:
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+
+volumes:
+  prometheus-data:
+  grafana-data:
