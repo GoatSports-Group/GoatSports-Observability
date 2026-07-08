@@ -19,7 +19,7 @@ parse_url() {
   eval "${prefix}_PATH=\$path"
 }
 
-parse_url USER "$USER_METRICS_URL"
+parse_url AUTH "$AUTH_METRICS_URL"
 parse_url VENUE "$VENUE_METRICS_URL"
 parse_url NOTIFICATION "$NOTIFICATION_METRICS_URL"
 parse_url REPORT "$REPORT_METRICS_URL"
