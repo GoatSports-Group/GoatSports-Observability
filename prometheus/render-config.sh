@@ -25,9 +25,9 @@ parse_url NOTIFICATION "$NOTIFICATION_METRICS_URL"
 parse_url REPORT "$REPORT_METRICS_URL"
 
 sed \
-  -e "s|__USER_SCHEME__|$USER_SCHEME|g" \
-  -e "s|__USER_HOST__|$USER_HOST|g" \
-  -e "s|__USER_PATH__|$USER_PATH|g" \
+  -e "s|__AUTH_SCHEME__|$AUTH_SCHEME|g" \
+  -e "s|__AUTH_HOST__|$AUTH_HOST|g" \
+  -e "s|__AUTH_PATH__|$AUTH_PATH|g" \
   -e "s|__VENUE_SCHEME__|$VENUE_SCHEME|g" \
   -e "s|__VENUE_HOST__|$VENUE_HOST|g" \
   -e "s|__VENUE_PATH__|$VENUE_PATH|g" \

@@ -1,6 +1,6 @@
 {
-    "uid": "goatsports-user-service",
-    "title": "Goat Sports User Service",
+    "uid": "goatsports-auth-service",
+    "title": "Goat Sports Auth Service",
     "schemaVersion": 39,
     "version": 1,
     "refresh": "15s",
@@ -11,7 +11,7 @@
     "tags": [
         "goatsports",
         "spring-boot",
-        "user-service"
+        "auth-service"
     ],
     "panels": [
         {
@@ -26,7 +26,7 @@
             },
             "targets": [
                 {
-                    "expr": "up{job=\"user-service\"}",
+                    "expr": "up{job=\"auth-service\"}",
                     "legendFormat": "{{instance}}"
                 }
             ],
@@ -60,7 +60,7 @@
             },
             "targets": [
                 {
-                    "expr": "sum(rate(http_server_requests_seconds_count{service=\"user-service\"}[1m]))",
+                    "expr": "sum(rate(http_server_requests_seconds_count{service=\"auth-service\"}[1m]))",
                     "legendFormat": "req/s"
                 }
             ],
@@ -82,7 +82,7 @@
             },
             "targets": [
                 {
-                    "expr": "sum(rate(http_server_requests_seconds_count{service=\"user-service\",status=~\"5..\"}[5m])) / clamp_min(sum(rate(http_server_requests_seconds_count{service=\"user-service\"}[5m])), 0.001)",
+                    "expr": "sum(rate(http_server_requests_seconds_count{service=\"auth-service\",status=~\"5..\"}[5m])) / clamp_min(sum(rate(http_server_requests_seconds_count{service=\"auth-service\"}[5m])), 0.001)",
                     "legendFormat": "5xx / total"
                 }
             ],
@@ -104,7 +104,7 @@
             },
             "targets": [
                 {
-                    "expr": "sum(jvm_memory_used_bytes{service=\"user-service\"})",
+                    "expr": "sum(jvm_memory_used_bytes{service=\"auth-service\"})",
                     "legendFormat": "used"
                 }
             ],
@@ -126,7 +126,7 @@
             },
             "targets": [
                 {
-                    "expr": "sum by (status) (rate(http_server_requests_seconds_count{service=\"user-service\"}[1m]))",
+                    "expr": "sum by (status) (rate(http_server_requests_seconds_count{service=\"auth-service\"}[1m]))",
                     "legendFormat": "{{status}}"
                 }
             ],
@@ -148,15 +148,15 @@
             },
             "targets": [
                 {
-                    "expr": "histogram_quantile(0.50, sum by (le) (rate(http_server_requests_seconds_bucket{service=\"user-service\"}[5m])))",
+                    "expr": "histogram_quantile(0.50, sum by (le) (rate(http_server_requests_seconds_bucket{service=\"auth-service\"}[5m])))",
                     "legendFormat": "p50"
                 },
                 {
-                    "expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_requests_seconds_bucket{service=\"user-service\"}[5m])))",
+                    "expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_requests_seconds_bucket{service=\"auth-service\"}[5m])))",
                     "legendFormat": "p95"
                 },
                 {
-                    "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_requests_seconds_bucket{service=\"user-service\"}[5m])))",
+                    "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_requests_seconds_bucket{service=\"auth-service\"}[5m])))",
                     "legendFormat": "p99"
                 }
             ],
@@ -178,7 +178,7 @@
             },
             "targets": [
                 {
-                    "expr": "topk(10, histogram_quantile(0.95, sum by (le, method, uri) (rate(http_server_requests_seconds_bucket{service=\"user-service\",uri!=\"UNKNOWN\"}[5m]))))",
+                    "expr": "topk(10, histogram_quantile(0.95, sum by (le, method, uri) (rate(http_server_requests_seconds_bucket{service=\"auth-service\",uri!=\"UNKNOWN\"}[5m]))))",
                     "legendFormat": "{{method}} {{uri}}"
                 }
             ],
@@ -200,7 +200,7 @@
             },
             "targets": [
                 {
-                    "expr": "topk(10, sum by (method, uri) (rate(http_server_requests_seconds_count{service=\"user-service\",uri!=\"UNKNOWN\"}[1m])))",
+                    "expr": "topk(10, sum by (method, uri) (rate(http_server_requests_seconds_count{service=\"auth-service\",uri!=\"UNKNOWN\"}[1m])))",
                     "legendFormat": "{{method}} {{uri}}"
                 }
             ],
@@ -222,11 +222,11 @@
             },
             "targets": [
                 {
-                    "expr": "sum by (area) (jvm_memory_used_bytes{service=\"user-service\"})",
+                    "expr": "sum by (area) (jvm_memory_used_bytes{service=\"auth-service\"})",
                     "legendFormat": "{{area}} used"
                 },
                 {
-                    "expr": "sum by (area) (jvm_memory_max_bytes{service=\"user-service\"})",
+                    "expr": "sum by (area) (jvm_memory_max_bytes{service=\"auth-service\"})",
                     "legendFormat": "{{area}} max"
                 }
             ],
@@ -248,15 +248,15 @@
             },
             "targets": [
                 {
-                    "expr": "sum(hikaricp_connections_active{service=\"user-service\"})",
+                    "expr": "sum(hikaricp_connections_active{service=\"auth-service\"})",
                     "legendFormat": "active"
                 },
                 {
-                    "expr": "sum(hikaricp_connections_idle{service=\"user-service\"})",
+                    "expr": "sum(hikaricp_connections_idle{service=\"auth-service\"})",
                     "legendFormat": "idle"
                 },
                 {
-                    "expr": "sum(hikaricp_connections_pending{service=\"user-service\"})",
+                    "expr": "sum(hikaricp_connections_pending{service=\"auth-service\"})",
                     "legendFormat": "pending"
                 }
             ],
@@ -278,11 +278,11 @@
             },
             "targets": [
                 {
-                    "expr": "process_cpu_usage{service=\"user-service\"}",
+                    "expr": "process_cpu_usage{service=\"auth-service\"}",
                     "legendFormat": "process"
                 },
                 {
-                    "expr": "system_cpu_usage{service=\"user-service\"}",
+                    "expr": "system_cpu_usage{service=\"auth-service\"}",
                     "legendFormat": "system"
                 }
             ],
