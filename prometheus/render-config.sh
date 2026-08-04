@@ -23,6 +23,8 @@ parse_url AUTH "$AUTH_METRICS_URL"
 parse_url VENUE "$VENUE_METRICS_URL"
 parse_url NOTIFICATION "$NOTIFICATION_METRICS_URL"
 parse_url REPORT "$REPORT_METRICS_URL"
+parse_url STORAGE "$STORAGE_METRICS_URL"
+parse_url WORKFLOW "$WORKFLOW_METRICS_URL"
 
 sed \
   -e "s|__AUTH_SCHEME__|$AUTH_SCHEME|g" \
@@ -37,6 +39,12 @@ sed \
   -e "s|__REPORT_SCHEME__|$REPORT_SCHEME|g" \
   -e "s|__REPORT_HOST__|$REPORT_HOST|g" \
   -e "s|__REPORT_PATH__|$REPORT_PATH|g" \
+  -e "s|__STORAGE_SCHEME__|$STORAGE_SCHEME|g" \
+  -e "s|__STORAGE_HOST__|$STORAGE_HOST|g" \
+  -e "s|__STORAGE_PATH__|$STORAGE_PATH|g" \
+  -e "s|__WORKFLOW_SCHEME__|$WORKFLOW_SCHEME|g" \
+  -e "s|__WORKFLOW_HOST__|$WORKFLOW_HOST|g" \
+  -e "s|__WORKFLOW_PATH__|$WORKFLOW_PATH|g" \
   /etc/prometheus/prometheus.yml.template > /tmp/prometheus.yml
 
 exec /bin/prometheus \

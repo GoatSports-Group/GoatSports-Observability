@@ -38,3 +38,21 @@ scrape_configs:
           - __REPORT_HOST__
         labels:
           service: report-service
+
+  - job_name: storage-service
+    scheme: __STORAGE_SCHEME__
+    metrics_path: __STORAGE_PATH__
+    static_configs:
+      - targets:
+          - __STORAGE_HOST__
+        labels:
+          service: storage-service
+
+  - job_name: workflow-service
+    scheme: __WORKFLOW_SCHEME__
+    metrics_path: __WORKFLOW_PATH__
+    static_configs:
+      - targets:
+          - __WORKFLOW_HOST__
+        labels:
+          service: workflow-service

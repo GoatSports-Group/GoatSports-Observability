@@ -10,6 +10,7 @@ services:
       NOTIFICATION_METRICS_URL: ${NOTIFICATION_METRICS_URL}
       REPORT_METRICS_URL: ${REPORT_METRICS_URL}
       STORAGE_METRICS_URL: ${STORAGE_METRICS_URL}
+      WORKFLOW_METRICS_URL: ${WORKFLOW_METRICS_URL}
     volumes:
       - ./prometheus/prometheus.yml.template:/etc/prometheus/prometheus.yml.template:ro
       - ./prometheus/render-config.sh:/etc/prometheus/render-config.sh:ro
@@ -35,6 +36,26 @@ services:
     depends_on:
       - prometheus
 
+  loki:
+    image: grafana/loki:latest
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - loki-data:/loki
+
+  promtail:
+    image: grafana/promtail:latest
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./promtail/promtail-config.yml:/etc/promtail/config.yml:ro
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+
 volumes:
   prometheus-data:
   grafana-data:
+  loki-data:
