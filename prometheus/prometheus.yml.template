@@ -56,3 +56,12 @@ scrape_configs:
           - __WORKFLOW_HOST__
         labels:
           service: workflow-service
+
+  - job_name: audit-service
+    scheme: __AUDIT_SCHEME__
+    metrics_path: __AUDIT_PATH__
+    static_configs:
+      - targets:
+          - __AUDIT_HOST__
+        labels:
+          service: audit-service
