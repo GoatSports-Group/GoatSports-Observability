@@ -12,6 +12,7 @@ services:
       STORAGE_METRICS_URL: ${STORAGE_METRICS_URL}
       WORKFLOW_METRICS_URL: ${WORKFLOW_METRICS_URL}
       AUDIT_METRICS_URL: ${AUDIT_METRICS_URL}
+      PAYMENT_METRICS_URL: ${PAYMENT_METRICS_URL}
     volumes:
       - ./prometheus/prometheus.yml.template:/etc/prometheus/prometheus.yml.template:ro
       - ./prometheus/render-config.sh:/etc/prometheus/render-config.sh:ro

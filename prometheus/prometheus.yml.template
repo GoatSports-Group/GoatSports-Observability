@@ -65,3 +65,12 @@ scrape_configs:
           - __AUDIT_HOST__
         labels:
           service: audit-service
+
+  - job_name: payment-service
+    scheme: __PAYMENT_SCHEME__
+    metrics_path: __PAYMENT_PATH__
+    static_configs:
+      - targets:
+          - __PAYMENT_HOST__
+        labels:
+          service: payment-service
