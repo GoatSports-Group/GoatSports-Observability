@@ -1,0 +1,291 @@
+apiVersion: 1
+groups:
+    - orgId: 1
+      name: goatsports-1m
+      folder: GoatSports
+      interval: 1m
+      rules:
+        - uid: ag0isfg86u2v4d
+          title: SERVICE DOWN
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: Prometheus
+              model:
+                editorMode: code
+                expr: up{job="goatsports"}
+                instant: true
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: C
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 1
+                        type: lt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          noDataState: Alerting
+          execErrState: Alerting
+          for: 1m
+          annotations:
+            description: Prometheus không gọi được {{ $labels.instance }} quá 1 phút. Kiểm tra container {{ $labels.service }} trên Dokploy (log, restart, RAM).
+            summary: '{{ $labels.service }} đang DOWN'
+          labels:
+            severity: critical
+          isPaused: false
+          notification_settings:
+            receiver: Telegram GoatSports
+        - uid: fg0it4az8z3eod
+          title: Lỗi 5xx
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: Prometheus
+              model:
+                editorMode: code
+                expr: sum by (service) (increase(http_server_requests_seconds_count{job="goatsports",status=~"5.."}[5m]))
+                instant: true
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: C
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 4
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          noDataState: OK
+          execErrState: OK
+          annotations:
+            description: |-
+                Service {{ $labels.service }} trả lỗi server (5xx) liên tục.
+                Xem panel "Requests theo status" và "Endpoint gọi nhiều nhất" trên dashboard Chi tiết service, rồi lọc log ERROR của {{ $labels.service }} để tìm exception.
+            summary: '{{ $labels.service }}: {{ humanize $values.A.Value }} lỗi 5xx trong 5 phút'
+          labels:
+            severity: critical
+          isPaused: false
+          notification_settings:
+            receiver: Telegram GoatSports
+        - uid: ag0itecd2msjka
+          title: 4xx bất thường
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: Prometheus
+              model:
+                editorMode: code
+                expr: sum by (service) (rate(http_server_requests_seconds_count{job="goatsports",status=~"4.."}[5m])) / sum by (service) (rate(http_server_requests_seconds_count{job="goatsports"}[5m])) and sum by (service) (increase(http_server_requests_seconds_count{job="goatsports"}[5m])) > 50
+                instant: true
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: C
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0.3
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          noDataState: OK
+          execErrState: OK
+          for: 5m
+          annotations:
+            description: |-
+                Hơn 30% request tới {{ $labels.service }} bị từ chối (4xx) trong 5 phút.
+                Thường do frontend gọi sai API sau khi deploy, đổi validation, hoặc route gateway sai. Kiểm tra status nào tăng (400/404/409) trên panel "Requests theo status".
+            summary: '{{ $labels.service }}: {{ humanizePercentage $values.A.Value }} request bị 4xx'
+          labels:
+            severity: warning
+          isPaused: false
+          notification_settings:
+            receiver: Telegram GoatSports
+        - uid: ag0itjagl0bnka
+          title: 401/403 tăng vọt
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: Prometheus
+              model:
+                editorMode: code
+                expr: sum by (service) (increase(http_server_requests_seconds_count{job="goatsports",status=~"401|403"}[5m]))
+                instant: true
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: C
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 100
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          noDataState: OK
+          execErrState: OK
+          annotations:
+            description: |-
+                Số request bị từ chối xác thực tại {{ $labels.service }} tăng bất thường.
+                Có thể là dò mật khẩu/token, JWT_SECRET lệch giữa các service, hoặc Keycloak lỗi khiến token không được chấp nhận. Kiểm tra log gateway và auth-service.
+            summary: '{{ $labels.service }}: {{ humanize $values.A.Value }} lần 401/403 trong 5 phút'
+          labels:
+            severity: warning
+          isPaused: false
+          notification_settings:
+            receiver: Telegram GoatSports
+        - uid: dg0itqloyss8we
+          title: Log ERROR (Loki)
+          condition: C
+          data:
+            - refId: A
+              queryType: instant
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: Loki
+              model:
+                datasource:
+                    type: loki
+                    uid: Loki
+                editorMode: code
+                expr: sum by (service) (count_over_time({level="ERROR"}[5m]))
+                hide: false
+                instant: true
+                intervalMs: 1000
+                maxDataPoints: 43200
+                queryType: instant
+                refId: A
+            - refId: C
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 20
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          noDataState: OK
+          execErrState: OK
+          annotations:
+            description: |-
+                {{ $labels.service }} ghi nhiều log ERROR dù có thể chưa trả 5xx (job nền, Kafka consumer, gửi mail, gọi service khác).
+                Xem panel log trên dashboard Tổng quan, chọn service {{ $labels.service }} và tìm "ERROR".
+            summary: '{{ $labels.service }}: {{ humanize $values.A.Value }} dòng log ERROR trong 5 phút'
+          labels:
+            severity: warning
+          isPaused: false
+          notification_settings:
+            receiver: Telegram GoatSports

@@ -3,7 +3,8 @@ global:
   evaluation_interval: 15s
 
 # Moi target la ten service trong infrastructure/compose (cung goatsports-network) + cong SERVER_PORT.
-# Label `service` dung cho dashboard; eureka-server va ai-service (FastAPI) chua co /metrics nen chi theo doi qua log.
+# Label `service` dung cho dashboard va alert; ai-service (FastAPI) xuat cung ten metric Micrometer o /actuator/prometheus.
+# eureka-server chua co metrics, chi theo doi qua log.
 scrape_configs:
   - job_name: goatsports
     metrics_path: /actuator/prometheus
@@ -30,3 +31,5 @@ scrape_configs:
         labels: {service: club-service}
       - targets: [social-service:7080]
         labels: {service: social-service}
+      - targets: [ai-service:7081]
+        labels: {service: ai-service}
