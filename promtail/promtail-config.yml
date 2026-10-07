@@ -17,3 +17,22 @@ scrape_configs:
       - source_labels: ['__meta_docker_container_name']
         regex: '/(.*)'
         target_label: 'container'
+      # Ten service trong compose (auth-service, gateway-server, keycloak...), khop label `service` ben Prometheus.
+      - source_labels: ['__meta_docker_container_label_com_docker_compose_service']
+        target_label: 'service'
+      - source_labels: ['service']
+        regex: 'gateway-server'
+        replacement: 'api-gateway'
+        target_label: 'service'
+    pipeline_stages:
+      # Log Spring: "yyyy-MM-dd HH:mm:ss LEVEL [correlationId] - msg"; gop stack trace vao dong goc va tach level.
+      - match:
+          selector: '{service=~"api-gateway|eureka-server|.+-service", service!="ai-service"}'
+          stages:
+            - multiline:
+                firstline: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} '
+                max_wait_time: 3s
+            - regex:
+                expression: '^\S+ \S+ (?P<level>TRACE|DEBUG|INFO|WARN|ERROR)\s+\[(?P<correlation_id>[^\]]*)\]'
+            - labels:
+                level:

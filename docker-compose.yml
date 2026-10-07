@@ -4,22 +4,14 @@ services:
     restart: unless-stopped
     ports:
       - "9090:9090"
-    environment:
-      AUTH_METRICS_URL: ${AUTH_METRICS_URL}
-      VENUE_METRICS_URL: ${VENUE_METRICS_URL}
-      NOTIFICATION_METRICS_URL: ${NOTIFICATION_METRICS_URL}
-      REPORT_METRICS_URL: ${REPORT_METRICS_URL}
-      STORAGE_METRICS_URL: ${STORAGE_METRICS_URL}
-      WORKFLOW_METRICS_URL: ${WORKFLOW_METRICS_URL}
-      AUDIT_METRICS_URL: ${AUDIT_METRICS_URL}
-      PAYMENT_METRICS_URL: ${PAYMENT_METRICS_URL}
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=15d
+      - --web.enable-lifecycle
     volumes:
-      - ./prometheus/prometheus.yml.template:/etc/prometheus/prometheus.yml.template:ro
-      - ./prometheus/render-config.sh:/etc/prometheus/render-config.sh:ro
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus-data:/prometheus
-    entrypoint:
-      - /bin/sh
-      - /etc/prometheus/render-config.sh
     networks:
       - goatsports-network
 
