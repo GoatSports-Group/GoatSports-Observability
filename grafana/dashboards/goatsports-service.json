@@ -71,7 +71,9 @@
             "uid": "Prometheus"
           },
           "expr": "up{job=\"goatsports\",service=\"$service\"}",
-          "legendFormat": ""
+          "legendFormat": "",
+          "instant": true,
+          "range": false
         }
       ],
       "fieldConfig": {
