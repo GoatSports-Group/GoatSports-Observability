@@ -529,6 +529,15 @@
           },
           "expr": "sum(jvm_memory_committed_bytes{job=\"goatsports\",service=\"$service\",area=\"heap\"})",
           "legendFormat": "committed heap"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "expr": "process_resident_memory_bytes{job=\"goatsports\",service=\"$service\"}",
+          "legendFormat": "RSS (process)"
         }
       ],
       "fieldConfig": {
@@ -578,7 +587,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "process_cpu_usage{job=\"goatsports\",service=\"$service\"}",
+          "expr": "process_cpu_usage{job=\"goatsports\",service=\"$service\"} or rate(process_cpu_seconds_total{job=\"goatsports\",service=\"$service\"}[$__rate_interval])",
           "legendFormat": "process"
         },
         {
